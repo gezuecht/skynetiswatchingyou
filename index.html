@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
    <html lang="de">
    <head>
      <meta charset="UTF-8">
@@ -264,22 +264,17 @@
          document.body.classList.remove(' phase-delete');
          document.body.style.backgroundCo lor = '#000';
 
-         // Nach kurzer Zeit Skynet-Screen anzeigen
          setTimeout(() => {
            screenDone.classList.add('hidden ');
            screenSkynet.classList.remove('h idden');
 
-           // Noch ein paar Sekunden stehen lassen, dann kann der User selbst schließen
            setTimeout(() => {
-             // window.close() funktioniert im Browser meist nur, wenn das Fenster per JS geöffnet
- wurde,
-             // also lassen wir es einfach stehen. Der Nutzer geht dann selbst zurück/Home.
+             // User schließt selbst
            }, 5000);
          }, 2000);
        }
 
        panicBtn.addEventListener('click ', () => {
-         // "Löschung abbrechen" beschleunigt nur das Unvermeidliche
          if (remaining > 1) {
            remaining = 1;
            updateCountdown();
@@ -287,155 +282,10 @@
        });
 
        closeBtn.addEventListener('click ', () => {
-         // "Programm schließen" führt ebenso zur Delete-Phase
          goToDeletePhase();
        });
 
-       // Auto-Start mit relativ schneller Anzeige
        startCountdown(800);
      </script>
-   </body>
-   </html>
- ```
-
- Für GitHub Pages:
-
- - Repo erstellen
- - index.html anlegen
- - diesen Code reinkopieren
- - Commit
- - unter Settings → Pages aktivieren
-
- Dann hast du deinen Link für den Prank.
-
-
- kopiere ich die ``` mit?
-
-
- Nein, die ``` gehören nicht dazu.
-
- Du kopierst nur den Inhalt zwischen den Codeblöcken, also ab:
-
- ```html
-   <!DOCTYPE html>
-   <html lang="de">
-   <head>
-     ...
- ```
-
- bis ganz unten:
-
- ```html
-   </html>
- ```
-
- ohne die drei Backticks oben und unten.
-
-
- es läuft der count down nicht und die knöpfe funktioniren nicht
-
-
- Dann ist beim Copy/Paste sehr wahrscheinlich etwas im HTML zerschossen worden (passiert oft, wenn
- der Editor Anführungszeichen „smart“ macht oder Teile weggelassen wurden).
-
- Am wichtigsten für Countdown & Buttons ist der Script-Block ganz unten:
-
- ```html
-   <script>
-     let remaining = 10;
-     let countdownInterval = null;
-     const countEl = document.getElementById('count') ;
-     const secondsEl = document.getElementById('seconds ');
-     const screenCountdown = document.getElementById('screen- countdown');
-     const screenDelete = document.getElementById('screen- delete');
-     const screenDone = document.getElementById('screen- done');
-     const screenSkynet = document.getElementById('screen- skynet');
-     const panicBtn = document.getElementById('panicBt n');
-     const closeBtn = document.getElementById('closeBt n');
-     const progressFill = document.getElementById('progres sFill');
-     const progressText = document.getElementById('progres sText');
-
-     function updateCountdown() {
-       countEl.textContent = remaining;
-       secondsEl.textContent = remaining;
-     }
-
-     function goToDeletePhase() {
-       clearInterval(countdownInterval) ;
-       document.body.classList.remove(' phase-countdown');
-       document.body.classList.add('pha se-delete');
-       screenCountdown.classList.add('h idden');
-       screenDelete.classList.remove('h idden');
-       startProgress();
-     }
-
-     function startCountdown(speedMs) {
-       updateCountdown();
-       countdownInterval = setInterval(() => {
-         remaining--;
-         if (remaining <= 0) {
-           goToDeletePhase();
-         } else {
-           updateCountdown();
-         }
-       }, speedMs);
-     }
-
-     function startProgress() {
-       let progress = 0;
-       const totalDuration = 4000; // 4 Sekunden
-       const stepMs = 80;
-       const step = 100 * stepMs / totalDuration;
-
-       const intId = setInterval(() => {
-         progress += step;
-         if (progress >= 100) {
-           progress = 100;
-           clearInterval(intId);
-           progressFill.style.width = progress + '%';
-           progressText.textContent = 'Löschung aller Daten abgeschlossen.';
-           setTimeout(() => {
-             showDone();
-           }, 1200);
-         } else {
-           progressFill.style.width = progress + '%';
-         }
-       }, stepMs);
-     }
-
-     function showDone() {
-       screenDelete.classList.add('hidd en');
-       screenDone.classList.remove('hid den');
-       document.body.classList.remove(' phase-delete');
-       document.body.style.backgroundCo lor = '#000';
-
-       // Nach kurzer Zeit Skynet-Screen anzeigen
-       setTimeout(() => {
-         screenDone.classList.add('hidden ');
-         screenSkynet.classList.remove('h idden');
-
-         // Noch ein paar Sekunden stehen lassen, dann kann der User selbst schließen
-         setTimeout(() => {
-           // window.close() …
-         }, 5000);
-       }, 2000);
-     }
-
-     panicBtn.addEventListener('click ', () => {
-       // "Löschung abbrechen" beschleunigt nur das Unvermeidliche
-       if (remaining > 1) {
-         remaining = 1;
-         updateCountdown();
-       }
-     });
-
-     closeBtn.addEventListener('click ', () => {
-       // "Programm schließen" führt ebenso zur Delete-Phase
-       goToDeletePhase();
-     });
-
-     // Auto-Start mit relativ schneller Anzeige
-     startCountdown(800);
-   </script>
    </body>
    </html>
