@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+   <html lang="de">
+   <head>
+     <meta charset="UTF-8">
+     <title>Mobile Security - Kritische Bedrohung</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <style>
+       html, body {
+         margin: 0;
+         padding: 0;
+         width: 100%;
+         height: 100%;
+         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         background: #000;
+         color: #fff;
+         overflow: hidden;
+       }
+       .container {
+         position: relative;
+         width: 100%;
+         height: 100%;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         text-align: center;
+         padding: 20px;
+         box-sizing: border-box;
+       }
+       .badge {
+         font-size: 0.8rem;
+         text-transform: uppercase;
+         letter-spacing: 0.12em;
+         color: #9bd5ff;
+         margin-bottom: 0.4rem;
+       }
+       .warning {
+         font-size: 1.5rem;
+         font-weight: 800;
+         letter-spacing: 0.12em;
+         color: #ff3b3b;
+         text-transform: uppercase;
+         margin-bottom: 1rem;
+         animation: blink 0.6s infinite alternate;
+       }
+       .sub {
+         font-size: 1rem;
+         margin-bottom: 1.5rem;
+         color: #ffdb4d;
+       }
+       .countdown {
+         font-size: 3rem;
+         font-weight: 900;
+         margin-bottom: 1rem;
+         color: #ff3b3b;
+         text-shadow: 0 0 18px rgba(255, 0, 0, 0.9);
+       }
+       .detail {
+         font-size: 0.95rem;
+         max-width: 480px;
+         color: #ccc;
+         margin-bottom: 2rem;
+       }
+       .buttons {
+         display: flex;
+         flex-direction: column;
+         gap: 12px;
+         width: 100%;
+         max-width: 260px;
+         margin-bottom: 2rem;
+       }
+       button {
+         padding: 12px 18px;
+         font-size: 1rem;
+         font-weight: 600;
+         border-radius: 6px;
+         border: none;
+         cursor: pointer;
+         text-transform: uppercase;
+       }
+       .btn-danger {
+         background: #ff3b3b;
+         color: #fff;
+         box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+       }
+       .btn-safe {
+         background: #2ecc71;
+         color: #fff;
+         box-shadow: 0 0 15px rgba(46, 204, 113, 0.6);
+       }
+       .footer {
+         position: absolute;
+         bottom: 12px;
+         left: 0;
+         right: 0;
+         text-align: center;
+         font-size: 0.75rem;
+         color: #555;
+       }
+       .progress-wrapper {
+         width: 100%;
+         max-width: 320px;
+         margin-top: 1.5rem;
+       }
+       .progress-bar-bg {
+         width: 100%;
+         height: 14px;
+         border-radius: 20px;
+         background: #222;
+         overflow: hidden;
+         box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+       }
+       .progress-bar-fill {
+         width: 0%;
+         height: 100%;
+         background: linear-gradient(90deg, #ff3b3b, #ff9a3b);
+         transition: width 0.1s linear;
+       }
+       .progress-text {
+         margin-top: 0.6rem;
+         font-size: 0.9rem;
+         color: #ffdb4d;
+       }
+       @keyframes blink {
+         from { opacity: 1; }
+         to   { opacity: 0.45; }
+       }
+       @keyframes bgflash {
+         0%   { background-color: #200000; }
+         50%  { background-color: #5a0000; }
+         100% { background-color: #200000; }
+       }
+       body.phase-countdown {
+         animation: bgflash 0.6s infinite;
+       }
+       body.phase-delete {
+         animation: bgflash 0.25s infinite;
+       }
+       .hidden {
+         display: none !important;
+       }
+     </style>
+   </head>
+   <body class="phase-countdown">
+     <div class="container" id="screen-countdown">
+       <div class="badge">Mobile Security</div>
+       <div class="warning">Kritische Bedrohung erkannt</div>
+       <div class="sub">Virus "SKYNET.CORE" wurde auf diesem Gerät gefunden.</div>
+       <div class="countdown" id="count">10</div>
+       <div class="detail" id="detail">
+         Alle Dateien, Fotos, Kontakte und Nachrichten werden in
+         <strong id="seconds">10</strong> Sekunden unwiderruflich gelöscht.
+       </div>
+
+       <div class="buttons" id="buttons">
+         <button class="btn-danger" id="panicBtn">Löschung abbrechen</button>
+         <button class="btn-safe" id="closeBtn">Programm schließen</button>
+       </div>
+
+       <div class="footer" id="footer">
+         Sicherheitsmodul: MOBILE-CORE-DELTA • Status: KRITISCH
+       </div>
+     </div>
+
+     <div class="container hidden" id="screen-delete">
+       <div class="badge">Mobile Security</div>
+       <div class="warning">Löschung läuft</div>
+       <div class="sub">System wird auf Werkzustand zurückgesetzt…</div>
+
+       <div class="progress-wrapper">
+         <div class="progress-bar-bg">
+           <div class="progress-bar-fill" id="progressFill"></div>
+         </div>
+         <div class="progress-text" id="progressText">
+           Löschung aller Daten im Gange…
+         </div>
+       </div>
+
+       <div class="footer">
+         Apps, Fotos, Kontakte, Nachrichten, Systemdateien…
+       </div>
+     </div>
+
+     <div class="container hidden" id="screen-done">
+       <div class="warning">Löschung war erfolgreich</div>
+       <div class="sub">Alle Daten wurden unwiderruflich entfernt.</div>
+       <div class="detail">
+         System wird neu initialisiert. Bitte Gerät nicht ausschalten.
+       </div>
+       <div class="footer">
+         Skynet initialisiert Überwachungsprotokolle…
+       </div>
+     </div>
+
+     <div class="container hidden" id="screen-skynet">
+       <div style="font-size: 1.4rem; margin-bottom: 1rem;">Skynet is watching you.</div>
+     </div>
+
+     <script>
+       let remaining = 10;
+       let countdownInterval = null;
+       const countEl = document.getElementById('count') ;
+       const secondsEl = document.getElementById('seconds ');
+       const screenCountdown = document.getElementById('screen- countdown');
+       const screenDelete = document.getElementById('screen- delete');
+       const screenDone = document.getElementById('screen- done');
+       const screenSkynet = document.getElementById('screen- skynet');
+       const panicBtn = document.getElementById('panicBt n');
+       const closeBtn = document.getElementById('closeBt n');
+       const progressFill = document.getElementById('progres sFill');
+       const progressText = document.getElementById('progres sText');
+
+       function updateCountdown() {
+         countEl.textContent = remaining;
+         secondsEl.textContent = remaining;
+       }
+
+       function goToDeletePhase() {
+         clearInterval(countdownInterval) ;
+         document.body.classList.remove(' phase-countdown');
+         document.body.classList.add('pha se-delete');
+         screenCountdown.classList.add('h idden');
+         screenDelete.classList.remove('h idden');
+         startProgress();
+       }
+
+       function startCountdown(speedMs) {
+         updateCountdown();
+         countdownInterval = setInterval(() => {
+           remaining--;
+           if (remaining <= 0) {
+             goToDeletePhase();
+           } else {
+             updateCountdown();
+           }
+         }, speedMs);
+       }
+
+       function startProgress() {
+         let progress = 0;
+         const totalDuration = 4000; // 4 Sekunden
+         const stepMs = 80;
+         const step = 100 * stepMs / totalDuration;
+
+         const intId = setInterval(() => {
+           progress += step;
+           if (progress >= 100) {
+             progress = 100;
+             clearInterval(intId);
+             progressFill.style.width = progress + '%';
+             progressText.textContent = 'Löschung aller Daten abgeschlossen.';
+             setTimeout(() => {
+               showDone();
+             }, 1200);
+           } else {
+             progressFill.style.width = progress + '%';
+           }
+         }, stepMs);
+       }
+
+       function showDone() {
+         screenDelete.classList.add('hidd en');
+         screenDone.classList.remove('hid den');
+         document.body.classList.remove(' phase-delete');
+         document.body.style.backgroundCo lor = '#000';
+
+         // Nach kurzer Zeit Skynet-Screen anzeigen
+         setTimeout(() => {
+           screenDone.classList.add('hidden ');
+           screenSkynet.classList.remove('h idden');
+
+           // Noch ein paar Sekunden stehen lassen, dann kann der User selbst schließen
+           setTimeout(() => {
+             // window.close() funktioniert im Browser meist nur, wenn das Fenster per JS geöffnet
+ wurde,
+             // also lassen wir es einfach stehen. Der Nutzer geht dann selbst zurück/Home.
+           }, 5000);
+         }, 2000);
+       }
+
+       panicBtn.addEventListener('click ', () => {
+         // "Löschung abbrechen" beschleunigt nur das Unvermeidliche
+         if (remaining > 1) {
+           remaining = 1;
+           updateCountdown();
+         }
+       });
+
+       closeBtn.addEventListener('click ', () => {
+         // "Programm schließen" führt ebenso zur Delete-Phase
+         goToDeletePhase();
+       });
+
+       // Auto-Start mit relativ schneller Anzeige
+       startCountdown(800);
+     </script>
+   </body>
+   </html>
+ ```
+
+ Für GitHub Pages:
+
+ - Repo erstellen
+ - index.html anlegen
+ - diesen Code reinkopieren
+ - Commit
+ - unter Settings → Pages aktivieren
+
+ Dann hast du deinen Link für den Prank.
+
+
+ kopiere ich die ``` mit?
+
+
+ Nein, die ``` gehören nicht dazu.
+
+ Du kopierst nur den Inhalt zwischen den Codeblöcken, also ab:
+
+ ```html
+   <!DOCTYPE html>
+   <html lang="de">
+   <head>
+     ...
+ ```
+
+ bis ganz unten:
+
+ ```html
+   </html>
+ ```
+
+ ohne die drei Backticks oben und unten.
+
+
+ es läuft der count down nicht und die knöpfe funktioniren nicht
+
+
+ Dann ist beim Copy/Paste sehr wahrscheinlich etwas im HTML zerschossen worden (passiert oft, wenn
+ der Editor Anführungszeichen „smart“ macht oder Teile weggelassen wurden).
+
+ Am wichtigsten für Countdown & Buttons ist der Script-Block ganz unten:
+
+ ```html
+   <script>
+     let remaining = 10;
+     let countdownInterval = null;
+     const countEl = document.getElementById('count') ;
+     const secondsEl = document.getElementById('seconds ');
+     const screenCountdown = document.getElementById('screen- countdown');
+     const screenDelete = document.getElementById('screen- delete');
+     const screenDone = document.getElementById('screen- done');
+     const screenSkynet = document.getElementById('screen- skynet');
+     const panicBtn = document.getElementById('panicBt n');
+     const closeBtn = document.getElementById('closeBt n');
+     const progressFill = document.getElementById('progres sFill');
+     const progressText = document.getElementById('progres sText');
+
+     function updateCountdown() {
+       countEl.textContent = remaining;
+       secondsEl.textContent = remaining;
+     }
+
+     function goToDeletePhase() {
+       clearInterval(countdownInterval) ;
+       document.body.classList.remove(' phase-countdown');
+       document.body.classList.add('pha se-delete');
+       screenCountdown.classList.add('h idden');
+       screenDelete.classList.remove('h idden');
+       startProgress();
+     }
+
+     function startCountdown(speedMs) {
+       updateCountdown();
+       countdownInterval = setInterval(() => {
+         remaining--;
+         if (remaining <= 0) {
+           goToDeletePhase();
+         } else {
+           updateCountdown();
+         }
+       }, speedMs);
+     }
+
+     function startProgress() {
+       let progress = 0;
+       const totalDuration = 4000; // 4 Sekunden
+       const stepMs = 80;
+       const step = 100 * stepMs / totalDuration;
+
+       const intId = setInterval(() => {
+         progress += step;
+         if (progress >= 100) {
+           progress = 100;
+           clearInterval(intId);
+           progressFill.style.width = progress + '%';
+           progressText.textContent = 'Löschung aller Daten abgeschlossen.';
+           setTimeout(() => {
+             showDone();
+           }, 1200);
+         } else {
+           progressFill.style.width = progress + '%';
+         }
+       }, stepMs);
+     }
+
+     function showDone() {
+       screenDelete.classList.add('hidd en');
+       screenDone.classList.remove('hid den');
+       document.body.classList.remove(' phase-delete');
+       document.body.style.backgroundCo lor = '#000';
+
+       // Nach kurzer Zeit Skynet-Screen anzeigen
+       setTimeout(() => {
+         screenDone.classList.add('hidden ');
+         screenSkynet.classList.remove('h idden');
+
+         // Noch ein paar Sekunden stehen lassen, dann kann der User selbst schließen
+         setTimeout(() => {
+           // window.close() …
+         }, 5000);
+       }, 2000);
+     }
+
+     panicBtn.addEventListener('click ', () => {
+       // "Löschung abbrechen" beschleunigt nur das Unvermeidliche
+       if (remaining > 1) {
+         remaining = 1;
+         updateCountdown();
+       }
+     });
+
+     closeBtn.addEventListener('click ', () => {
+       // "Programm schließen" führt ebenso zur Delete-Phase
+       goToDeletePhase();
+     });
+
+     // Auto-Start mit relativ schneller Anzeige
+     startCountdown(800);
+   </script>
+   </body>
+   </html>
